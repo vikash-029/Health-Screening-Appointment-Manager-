@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Dashboard</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <header>
+        <h2>Staff Dashboard</h2>
+        <a href="dashboard.html">Dashboard</a>
+        <a href="setup.html">Setup</a>
+        <a href="reminders.html">Reminders</a>
+        <a href="attendance.html">Attendance</a>
+        <a href="register.html">Book Appointment</a>
+        <a href="#" onclick="logout()">Logout</a>
+    </header>
+
+    <div class="box">
+        <h3>Summary</h3>
+        <p id="summary"></p>
+    </div>
+
+    <div class="box">
+        <h3>Report by Program</h3>
+        <table>
+            <tr>
+                <th>Program</th>
+                <th>Total Bookings</th>
+                <th>Attended</th>
+                <th>No-show</th>
+            </tr>
+            <tbody id="report"></tbody>
+        </table>
+    </div>
+
+    <div class="box">
+        <h3>All Appointments</h3>
+        <table>
+            <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Phone</th>
+                <th>Program</th>
+                <th>Time</th>
+                <th>Status</th>
+            </tr>
+            <tbody id="table"></tbody>
+        </table>
+    </div>
+
+    <script src="script.js"></script>
+    <script>
+        checkStaff();
+
+        var programs = getData("programs");
+        var bookings = getData("bookings");
+
+        // Overall counts
+        var booked = 0;
+        var attended = 0;
+        var noshow = 0;
+        for (var i = 0; i < bookings.length; i++) {
+            if (bookings[i].status == "Booked") { booked++; }
+            if (bookings[i].status == "Attended") { attended++; }
+            if (bookings[i].status == "No-show") { noshow++; }
+        }
+        document.getElementById("summary").innerHTML =
+            "Programs: " + programs.length + " | Total bookings: " + bookings.length +
+            " | Waiting: " + booked + " | Attended: " + attended + " | No-show: " + noshow;
+
+        // Report for each program
+        var reportHtml = "";
+        for (var p = 0; p < programs.length; p++) {
+            var total = 0, att = 0, ns = 0;
+            for (var q = 0; q < bookings.length; q++) {
+                if (bookings[q].program == programs[p].name) {
+                    total++;
+                    if (bookings[q].status == "Attended") { att++; }
+                    if (bookings[q].status == "No-show") { ns++; }
+                }
+            }
+            reportHtml += "<tr><td>" + programs[p].name + "</td><td>" + total + "</td><td>" + att + "</td><td>" + ns + "</td></tr>";
+        }
+        document.getElementById("report").innerHTML = reportHtml;
+
+        // All appointments list
+        var html = "";
+        for (var k = 0; k < bookings.length; k++) {
+            var b = bookings[k];
+            html += "<tr><td>" + b.id + "</td><td>" + b.name + "</td><td>" + b.phone + "</td><td>" +
+                b.program + "</td><td>" + b.time + "</td><td>" + b.status + "</td></tr>";
+        }
+        document.getElementById("table").innerHTML = html;
+    </script>
+</body>
+
+</html>

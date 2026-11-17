@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Reminders</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header>
+    <h2>Reminders</h2>
+    <a href="dashboard.html">Dashboard</a>
+    <a href="setup.html">Setup</a>
+    <a href="reminders.html">Reminders</a>
+    <a href="attendance.html">Attendance</a>
+    <a href="register.html">Book Appointment</a>
+    <a href="#" onclick="logout()">Logout</a>
+  </header>
+
+  <div class="box">
+    <p>Click Send to remind a participant (the message is only simulated).</p>
+    <table>
+      <tr><th>ID</th><th>Name</th><th>Phone</th><th>Program</th><th>Time</th><th>Reminder</th><th>Action</th></tr>
+      <tbody id="table"></tbody>
+    </table>
+  </div>
+
+  <script src="script.js"></script>
+  <script>
+    checkStaff();
+
+    function showReminders() {
+      var bookings = getData("bookings");
+      var html = "";
+      for (var i = 0; i < bookings.length; i++) {
+        var b = bookings[i];
+        if (b.status == "Booked") {
+          html += "<tr><td>" + b.id + "</td><td>" + b.name + "</td><td>" + b.phone + "</td><td>" +
+                  b.program + "</td><td>" + b.time + "</td><td>" + b.reminder + "</td><td>";
+          if (b.reminder == "Pending") {
+            html += "<button onclick='sendReminder(" + i + ")'>Send</button>";
+          }
+          html += "</td></tr>";
+        }
+      }
+      document.getElementById("table").innerHTML = html;
+    }
+
+    function sendReminder(index) {
+      var bookings = getData("bookings");
+      bookings[index].reminder = "Sent";
+      saveData("bookings", bookings);
+      alert("Reminder sent to " + bookings[index].name);
+      showReminders();
+    }
+
+    showReminders();
+  </script>
+</body>
+</html>

@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Setup</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <header>
+        <h2>Program and Slot Setup</h2>
+        <a href="dashboard.html">Dashboard</a>
+        <a href="setup.html">Setup</a>
+        <a href="reminders.html">Reminders</a>
+        <a href="attendance.html">Attendance</a>
+        <a href="register.html">Book Appointment</a>
+        <a href="#" onclick="logout()">Logout</a>
+    </header>
+
+    <div class="box">
+        <h3>1. Add Screening Program</h3>
+        <input type="text" id="pname" placeholder="Program name">
+        <input type="date" id="pdate">
+        <button onclick="addProgram()">Add Program</button>
+        <!-- NEW button -->
+        <button onclick="addDefaultPrograms()">Add 9 Default Programs</button>
+        <table>
+            <tr>
+                <th>Program</th>
+                <th>Date</th>
+                <th>Action</th>
+            </tr>
+            <tbody id="programTable"></tbody>
+        </table>
+    </div>
+
+    <div class="box">
+        <h3>2. Add Time Slot</h3>
+        <select id="programSelect"></select>
+        <input type="time" id="stime">
+        <input type="number" id="scap" placeholder="Capacity">
+        <button onclick="addSlot()">Add Slot</button>
+        <!-- NEW button -->
+        <button onclick="addDefaultSlots()">Add 15 Default Slots</button>
+        <table>
+            <tr>
+                <th>Program</th>
+                <th>Time</th>
+                <th>Capacity</th>
+                <th>Action</th>
+            </tr>
+            <tbody id="slotTable"></tbody>
+        </table>
+    </div>
+
+    <script src="script.js"></script>
+    <script>
+        checkStaff();
+
+        function showAll() {
+            var programs = getData("programs");
+            var slots = getData("slots");
+            var html = "";
+            var options = "";
+
+            for (var i = 0; i < programs.length; i++) {
+                html += "<tr><td>" + programs[i].name + "</td><td>" + programs[i].date +
+                    "</td><td><button onclick='deleteProgram(" + i + ")'>Delete</button></td></tr>";
+                options += "<option>" + programs[i].name + "</option>";
+            }
+            document.getElementById("programTable").innerHTML = html;
+            document.getElementById("programSelect").innerHTML = options;
+
+            html = "";
+            for (var j = 0; j < slots.length; j++) {
+                html += "<tr><td>" + slots[j].program + "</td><td>" + slots[j].time + "</td><td>" +
+                    slots[j].capacity + "</td><td><button onclick='deleteSlot(" + j + ")'>Delete</button></td></tr>";
+            }
+            document.getElementById("slotTable").innerHTML = html;
+        }
+
+        function addProgram() {
+            var name = document.getElementById("pname").value;
+            var date = document.getElementById("pdate").value;
+            if (name == "" || date == "") {
+                alert("Please fill program name and date");
+                return;
+            }
+            var programs = getData("programs");
+            programs.push({ name: name, date: date });
+            saveData("programs", programs);
+            document.getElementById("pname").value = "";
+            showAll();
+        }
+
+        // NEW: adds 9 programs using the date chosen in the date box
+        function addDefaultPrograms() {
+            var date = document.getElementById("pdate").value;
+            if (date == "") {
+                alert("Please choose a date first");
+                return;
+            }
+
+            var names = [
+                "General Health Check-up",
+                "Diabetes Screening",
+                "Blood Pressure Check",
+                "Eye Screening",
+                "Dental Check-up",
+                "Cholesterol Test",
+                "Thyroid Test",
+                "BMI and Nutrition Check",
+                "ECG / Heart Screening"
+            ];
+
+            var programs = getData("programs");
+            for (var i = 0; i < names.length; i++) {
+                programs.push({ name: names[i], date: date });
+            }
+            saveData("programs", programs);
+            showAll();
+        }
+
+        function deleteProgram(index) {
+            var programs = getData("programs");
+            var slots = getData("slots");
+            var deletedName = programs[index].name;
+            programs.splice(index, 1);
+
+            // also remove slots of this program
+            var newSlots = [];
+            for (var i = 0; i < slots.length; i++) {
+                if (slots[i].program != deletedName) {
+                    newSlots.push(slots[i]);
+                }
+            }
+            saveData("programs", programs);
+            saveData("slots", newSlots);
+            showAll();
+        }
+
+        function addSlot() {
+            var program = document.getElementById("programSelect").value;
+            var time = document.getElementById("stime").value;
+            var capacity = document.getElementById("scap").value;
+            if (program == "" || time == "" || capacity < 1) {
+                alert("Please choose a program, time and capacity (1 or more)");
+                return;
+            }
+            var slots = getData("slots");
+            slots.push({ program: program, time: time, capacity: Number(capacity) });
+            saveData("slots", slots);
+            showAll();
+        }
+
+        // NEW: adds 15 slots (9 AM to 5 PM, lunch break 1:00 to 1:30 PM)
+        function addDefaultSlots() {
+            var program = document.getElementById("programSelect").value;
+            if (program == "") {
+                alert("Please add a program first");
+                return;
+            }
+
+            var times = ["09:00", "09:30", "10:00", "10:30", "11:00",
+                "11:30", "12:00", "12:30", "13:30", "14:00",
+                "14:30", "15:00", "15:30", "16:00", "16:30"];
+
+            var slots = getData("slots");
+            for (var i = 0; i < times.length; i++) {
+                slots.push({ program: program, time: times[i], capacity: 5 });
+            }
+            saveData("slots", slots);
+            showAll();
+        }
+
+        function deleteSlot(index) {
+            var slots = getData("slots");
+            slots.splice(index, 1);
+            saveData("slots", slots);
+            showAll();
+        }
+
+        showAll();
+    </script>
+</body>
+
+</html>

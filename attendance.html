@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Attendance</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header>
+    <h2>Attendance</h2>
+    <a href="dashboard.html">Dashboard</a>
+    <a href="setup.html">Setup</a>
+    <a href="reminders.html">Reminders</a>
+    <a href="attendance.html">Attendance</a>
+    <a href="register.html">Book Appointment</a>
+    <a href="#" onclick="logout()">Logout</a>
+  </header>
+
+  <div class="box">
+    <table>
+      <tr><th>ID</th><th>Name</th><th>Program</th><th>Time</th><th>Status</th><th>Mark</th></tr>
+      <tbody id="table"></tbody>
+    </table>
+  </div>
+
+  <script src="script.js"></script>
+  <script>
+    checkStaff();
+
+    function showAttendance() {
+      var bookings = getData("bookings");
+      var html = "";
+      for (var i = 0; i < bookings.length; i++) {
+        var b = bookings[i];
+        html += "<tr><td>" + b.id + "</td><td>" + b.name + "</td><td>" + b.program + "</td><td>" +
+                b.time + "</td><td>" + b.status + "</td><td>" +
+                "<button onclick='mark(" + i + ", \"Attended\")'>Attended</button>" +
+                "<button onclick='mark(" + i + ", \"No-show\")'>No-show</button></td></tr>";
+      }
+      document.getElementById("table").innerHTML = html;
+    }
+
+    function mark(index, newStatus) {
+      var bookings = getData("bookings");
+      bookings[index].status = newStatus;
+      saveData("bookings", bookings);
+      showAttendance();
+    }
+
+    showAttendance();
+  </script>
+</body>
+</html>

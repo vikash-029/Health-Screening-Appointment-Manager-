@@ -1,0 +1,52 @@
+body {
+  font-family: Arial, sans-serif;
+  background: #f2f6f5;
+  margin: 0;
+}
+
+header {
+  background: #0b4f4f;
+  color: white;
+  padding: 15px;
+}
+
+header a {
+  color: white;
+  margin-right: 15px;
+}
+
+.box {
+  background: white;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  padding: 15px;
+  margin: 15px;
+}
+
+input, select, button {
+  padding: 8px;
+  margin: 5px 5px 5px 0;
+}
+
+button {
+  background: #0f6b6b;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+table {
+  border-collapse: collapse;
+  width: 100%;
+}
+
+th, td {
+  border: 1px solid #ccc;
+  padding: 8px;
+  text-align: left;
+}
+
+th {
+  background: #e1f0ee;
+}

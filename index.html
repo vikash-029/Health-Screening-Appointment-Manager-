@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Health Screening Appointment Manager</title>
+
+    <style>
+        /* Page background and font */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #eaf7f7;
+            margin: 0;
+        }
+
+        /* Top bar */
+        header {
+            background-color: #0e9aa7;
+            color: white;
+            padding: 15px 30px;
+            display: flex;
+            align-items: center;
+        }
+
+        header h2 {
+            margin: 0 0 0 12px;
+            flex: 1;
+        }
+
+        header a {
+            color: white;
+            text-decoration: none;
+            margin-left: 20px;
+            font-weight: bold;
+        }
+
+        header a:hover {
+            text-decoration: underline;
+        }
+
+        /* Welcome text */
+        .hero {
+            text-align: center;
+            padding: 40px 20px 10px;
+        }
+
+        .hero h1 {
+            color: #086375;
+        }
+
+        .hero p {
+            color: #555;
+        }
+
+        /* Row that holds the two boxes */
+        .container {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 25px;
+            padding: 20px;
+        }
+
+        /* White boxes */
+        .box {
+            background-color: white;
+            width: 300px;
+            padding: 25px;
+            border-radius: 12px;
+            text-align: center;
+            border-top: 5px solid #0e9aa7;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+        }
+
+        .box.red {
+            border-top-color: #e63946;
+        }
+
+        .box input {
+            width: 90%;
+            padding: 10px;
+            margin-bottom: 12px;
+            border: 1px solid #aaa;
+            border-radius: 6px;
+        }
+
+        /* Buttons */
+        button {
+            background-color: #0e9aa7;
+            color: white;
+            border: none;
+            padding: 10px 25px;
+            font-size: 16px;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #086375;
+        }
+
+        .red button {
+            background-color: #e63946;
+        }
+
+        .red button:hover {
+            background-color: #b92a36;
+        }
+
+        footer {
+            text-align: center;
+            padding: 15px;
+            color: #555;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Top bar with logo -->
+    <header>
+        <!-- Logo: white circle, nurse cap and red medical cross -->
+        <svg width="50" height="50" viewBox="0 0 100 100">
+            <circle cx="50" cy="50" r="48" fill="white" />
+            <path d="M20 60 Q18 30 50 27 Q82 30 80 60 L74 68 Q50 78 26 68 Z" fill="#d9f0f0" stroke="#0e9aa7"
+                stroke-width="3" />
+            <rect x="45" y="34" width="10" height="24" fill="#e63946" />
+            <rect x="38" y="41" width="24" height="10" fill="#e63946" />
+        </svg>
+
+        <h2>Health Screening Appointment Manager</h2>
+        <a href="index.html">Home</a>
+        <a href="register.html">Book Appointment</a>
+    </header>
+
+    <!-- Welcome text -->
+    <div class="hero">
+        <h1>Welcome! Your Health Matters</h1>
+        <p>Book your health screening slot easily, or log in as staff to manage appointments.</p>
+    </div>
+
+    <!-- Two boxes -->
+    <div class="container">
+
+        <div class="box">
+            <h3>Staff Login</h3>
+            <input type="password" id="pin" placeholder="Enter PIN (1234)">
+            <br>
+            <button onclick="login()">Login</button>
+        </div>
+
+        <div class="box red">
+            <h3>Participants</h3>
+            <p>No login needed. Click below to book a slot.</p>
+            <a href="register.html"><button>Book Appointment</button></a>
+        </div>
+
+    </div>
+
+    <footer>© 2026 Health Screening Appointment Manager</footer>
+
+    <script src="script.js"></script>
+    <script>
+        function login() {
+            var pin = document.getElementById("pin").value;
+            if (pin == "1234") {
+                sessionStorage.setItem("role", "staff");
+                window.location = "dashboard.html";
+            } else {
+                alert("Wrong PIN");
+            }
+        }
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Book Appointment</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <header>
+        <h2>Book a Screening Appointment</h2>
+        <a href="index.html">Home</a>
+        <a href="register.html">Book Appointment</a>
+    </header>
+
+    <div class="box">
+        <p>Program:</p>
+        <select id="program" onchange="loadSlots()">
+            <option>General Health Check-up</option>
+            <option>Diabetes Screening</option>
+            <option>Blood Pressure Check</option>
+            <option>Eye Screening</option>
+            <option>Dental Check-up</option>
+            <option>Cholesterol Test</option>
+            <option>Thyroid Test</option>
+            <option>BMI and Nutrition Check</option>
+            <option>ECG / Heart Screening</option>
+        </select>
+
+        <p>Time slot:</p>
+        <select id="slot"></select>
+
+        <p>Your details:</p>
+        <input type="text" id="name" placeholder="Full name">
+        <input type="number" id="age" placeholder="Age">
+        <input type="text" id="phone" placeholder="Phone (10 digits)">
+        <br>
+        <button onclick="book()">Book Appointment</button>
+        <p id="result"></p>
+    </div>
+
+    <script src="script.js"></script>
+    <script>
+        // 15 time slots (9 AM to 5 PM, lunch break 1:00 to 1:30 PM)
+        var times = [
+            "09:00 AM", "09:30 AM", "10:00 AM", "10:30 AM", "11:00 AM",
+            "11:30 AM", "12:00 PM", "12:30 PM", "01:30 PM", "02:00 PM",
+            "02:30 PM", "03:00 PM", "03:30 PM", "04:00 PM", "04:30 PM"
+        ];
+
+        // Seats available in each slot
+        var capacity = 5;
+
+        // Show the time slots with seats left
+        function loadSlots() {
+            var program = document.getElementById("program").value;
+            var bookings = getData("bookings");
+            var options = "";
+
+            for (var i = 0; i < times.length; i++) {
+                // Count how many people booked this program and time
+                var count = 0;
+                for (var j = 0; j < bookings.length; j++) {
+                    if (bookings[j].program == program && bookings[j].time == times[i]) {
+                        count++;
+                    }
+                }
+
+                var left = capacity - count;
+                if (left > 0) {
+                    options += "<option value='" + times[i] + "'>" + times[i] + " (" + left + " seats left)</option>";
+                }
+            }
+
+            if (options == "") {
+                options = "<option value=''>No slots available</option>";
+            }
+            document.getElementById("slot").innerHTML = options;
+        }
+
+        function book() {
+            var program = document.getElementById("program").value;
+            var time = document.getElementById("slot").value;
+            var name = document.getElementById("name").value;
+            var age = document.getElementById("age").value;
+            var phone = document.getElementById("phone").value;
+
+            // Check the details
+            if (time == "") {
+                alert("Please choose a slot");
+                return;
+            }
+            if (name == "" || age < 1 || age > 120) {
+                alert("Please enter a valid name and age");
+                return;
+            }
+            if (phone.length != 10 || isNaN(phone)) {
+                alert("Phone must be exactly 10 digits");
+                return;
+            }
+
+            var bookings = getData("bookings");
+
+            // Same phone cannot book the same program twice
+            for (var i = 0; i < bookings.length; i++) {
+                if (bookings[i].phone == phone && bookings[i].program == program) {
+                    alert("This phone number already has a booking for this program");
+                    return;
+                }
+            }
+
+            // Make a booking ID and save the booking
+            var id = "HS" + Math.floor(Math.random() * 9000 + 1000);
+            bookings.push({
+                id: id,
+                name: name,
+                age: age,
+                phone: phone,
+                program: program,
+                time: time,
+                status: "Booked",
+                reminder: "Pending"
+            });
+            saveData("bookings", bookings);
+
+            document.getElementById("result").innerHTML = "Booking done! Your booking ID is " + id;
+            document.getElementById("name").value = "";
+            document.getElementById("age").value = "";
+            document.getElementById("phone").value = "";
+            loadSlots();
+        }
+
+        // Show the slots when the page opens
+        loadSlots();
+    </script>
+</body>
+
+</html>
